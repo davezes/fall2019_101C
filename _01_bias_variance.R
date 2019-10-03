@@ -120,9 +120,6 @@ for(ii in 1:nn) {
     
     y <- f.true + errs
     
-    mxyy[ , ii ] <- y
-    
-    
     f.hat <- h.poly(x=x, y=y, porder=0)
     mxyhats0[ , ii ] <- f.hat(x=x)
     

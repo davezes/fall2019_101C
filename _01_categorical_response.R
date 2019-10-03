@@ -58,12 +58,13 @@ xlab <- "A"
 phat <- y0[ , xlab ] / k
 
 y.hard <- rep( "B", length(iindx) )
-
 y.hard[ phat > 0.5 ] <- xlab
+
+
 
 table( y.valid, y.hard )
 
-plot(X.train[ , 1], X.train[ , 2], type="n", xlim=range(X[ ,1]), ylim=range(X[ ,2]))
+plot(X.train[ , 1], X.train[ , 2], type="n", xlim=range(X[ ,1]), ylim=range(X[ ,2]), xlab="x1", ylab="x2")
 text(labels=y.train, X.train[ , 1], X.train[ , 2], col="#555555" )
 ##text(labels=y.train, X.train[ , 1], X.train[ , 2], col=c("#FF0000", "#00FF00")[ match( y.train, c("A", "B") ) ] )
 
@@ -126,7 +127,7 @@ for(jj in 1:length(xmus)) {
     )
     cat( "\n\n\n")
     
-    plot(X.train[ , 1], X.train[ , 2], type="n", xlim=range(X[ ,1]), ylim=range(X[ ,2]))
+    plot(X.train[ , 1], X.train[ , 2], type="n", xlim=range(X[ ,1]), ylim=range(X[ ,2]), xlab="x1", ylab="x2")
     text(labels=y.train, X.train[ , 1], X.train[ , 2], col="#555555" )
     ##text(labels=y.train, X.train[ , 1], X.train[ , 2], col=c("#FF0000", "#00FF00")[ match( y.train, c("A", "B") ) ] )
     
