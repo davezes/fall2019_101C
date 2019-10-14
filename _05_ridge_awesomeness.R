@@ -4,7 +4,7 @@
 options(stringsAsFactors=FALSE, width=350)
 
 
-xbool.savePlots <- FALSE
+xbool.savePlots <- TRUE
 
 
 ####### make sure in working directory
@@ -19,7 +19,7 @@ p <- 250
 
 N <- 300
 
-## set.seed(777)
+set.seed(777)
 
 
 xSig <- diag(2, p)
@@ -56,55 +56,18 @@ summary(xlm)
 
 
 
-
-########################### no ridge
-
-
-k.fold <- 30
-k.fold <- N/1 ##### if you set this to N, it'll be LOOCV
-
-iicos <- seq(0, N, length=k.fold+1)
-
-y.hat <- rep(NA, N)
-
-for(ii in 1:k.fold) {
-    
-    xndx.valid <- I( (iicos[ ii ] + 1):iicos[ ii + 1 ] ) ; xndx.valid
-    xndx.train <- setdiff( I(1:N), xndx.valid )
-    
-    ###### shrink = 0
-    xlambda <- 0/2
-    f.hat <- h.ridge.scale(X=X[ xndx.train, , drop=FALSE ], y=y[ xndx.train ], lambda=xlambda)
-    y.hat[ xndx.valid ] <- f.hat(x=X[ xndx.valid, , drop=FALSE ])
-    
-    ###### or use this
-    #xdf <- data.frame("X"=X[ xndx.train, , drop=FALSE ], "y"=y[ xndx.train ])
-    #ylm <- lm(y~., data=xdf)
-    #y.hat[ xndx.valid ] <- predict(ylm, newdata=data.frame("X"=X[ xndx.valid, , drop=FALSE ], "y"=rep(NA, length(xndx.valid))))
-    
-}
-
-MSE.test <- mean( (y - y.hat)^2 )
-MSE.test
-
-R2 <- 1 - MSE.test / mean( (y - mean(y))^2 )
-R2
-
-#### R2 <- var(y.hat) / var(y) ; R2
-
-
-plot(y.hat, y)
-
-
-
-
 ####################################### lambda search
 
 k.fold <- N/2 ##### if you set this to N, it'll be LOOCV
 iicos <- seq(0, N, length=k.fold+1)
 
 
-xlambdas.vec <- exp( seq(-10, 2, length=28) ) ; xlambdas.vec
+## xlambdas.vec <- c(0, exp( seq(-10, 2, length=28) )) ; xlambdas.vec
+
+xlambdas.vec <- seq(0, 0.03, length=50) ; xlambdas.vec
+
+R2vec <- NULL
+MSEtestvec <- NULL
 
 for(iilam in 1:length(xlambdas.vec)) {
     
@@ -129,11 +92,17 @@ for(iilam in 1:length(xlambdas.vec)) {
     R2 <- 1 - MSE.test / mean( (y - mean(y))^2 )
     R2
     
+    R2vec[iilam] <- R2
+    MSEtestvec[iilam] <- MSE.test
+    
     cat(iilam, "::", xlambda, " -- ", R2, " -- ", MSE.test, "\n")
     
 }
 
 
+if(xbool.savePlots) { png("~/Desktop/ridgeAwesomeness_01.png", height=1000, width=1000, pointsize=24) }
+plot(xlambdas.vec, R2vec, type="l", col="#00AA00", lwd=3)
+if(xbool.savePlots) { dev.off() }
 
 
 ############
@@ -147,11 +116,16 @@ library(glmnet)
 library(dplyr)
 
 
-k.fold <- N/1 ##### if you set this to N, it'll be LOOCV
+k.fold <- N/2 ##### if you set this to N, it'll be LOOCV
 iicos <- seq(0, N, length=k.fold+1)
 
 
-xlambdas.vec <- exp( seq(-10, 3, length=30) ) ; xlambdas.vec
+## xlambdas.vec <- exp( seq(-10, 3, length=30) ) ; xlambdas.vec
+
+xlambdas.vec <- seq(0, 0.03, length=50) ; xlambdas.vec
+
+R2vecLass <- NULL
+MSEtestvecLass <- NULL
 
 for(iilam in 1:length(xlambdas.vec)) {
     
@@ -182,6 +156,8 @@ for(iilam in 1:length(xlambdas.vec)) {
     R2 <- 1 - MSE.test / mean( (y - mean(y))^2 )
     R2
     
+    R2vecLass[ iilam ] <- R2
+    MSEtestvecLass[ iilam ] <- MSE.test
     
     cat(iilam, "::", xlambda, " -- ", R2, " -- ", MSE.test, "\n")
     
@@ -201,26 +177,13 @@ xglmnet <- glmnet(x=xx, y=y, family = "gaussian", alpha = 1, lambda = xlambda)
 
 coef(xglmnet)
 
+if(xbool.savePlots) { png("~/Desktop/ridgeAwesomeness_02.png", height=1000, width=1000, pointsize=24) }
+plot(xlambdas.vec, R2vec, type="l", col="#00AA00", lwd=5, ylab="CV Test R2")
+points(xlambdas.vec, R2vecLass, type="l", col="#0000AA", lwd=5)
+legend(0.023, 0.24, legend=c("Ridge", "Lasso"), bty="n", col=c("#00AA00", "#0000AA"), lwd=5)
+if(xbool.savePlots) { dev.off() }
 
 
-#############################
 
-
-X.ext <- rmvnorm(N, rep(0, p), xSig)
-
-f.true.ext <- X.ext %*% eigen(xSig)[[ "vectors" ]][ , (p-19):p ] %*% (1 * rep(c(-1, 1), 10))
-
-y.ext <- f.true.ext + rnorm(N)
-##xlm <- lm(y~X)
-##summary(xlm)
-
-xlambda <- xlambdas.vec[ 13 ] ; xlambda
-
-f.hat <- h.ridge.scale(X=X, y=y, lambda=xlambda)
-y.hat.ext <- f.hat(x=X.ext)
-
-
-MSE.test <- mean( (y.ext - y.hat.ext)^2 )
-MSE.test
 
 

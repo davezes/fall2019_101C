@@ -21,7 +21,7 @@ source("___f_funs.R")
 
 
 
-############ prepair dataset for bias variance
+############ sim data
 
 library(mvtnorm)
 
