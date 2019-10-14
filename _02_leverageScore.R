@@ -6,9 +6,8 @@
 
 options(stringsAsFactors=FALSE, width=350)
 
-xbool.savePlots <- TRUE
+xbool.savePlots <- FALSE
 
-if(xbool.savePlots) { unlink(file.path("~", "Desktop", "animStuff", "*")) }
 
 N <- 50
 
