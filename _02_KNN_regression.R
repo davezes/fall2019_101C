@@ -13,7 +13,7 @@ xbool.savePlots <- FALSE
 source("___f_funs.R")
 
 
-############ prepair dataset for bias variance
+############
 
 library(mvtnorm)
 
@@ -63,15 +63,15 @@ if(xbool.savePlots) { dev.off() }
 ################### plot data
 if(xbool.savePlots) { png(file.path("~", "Desktop", "KNN_rgr_2d.png"), width=2000, height=1000, pointsize=28) }
 par(mfrow=c(1, 2))
-scatter3D(X[,1], X[,2], y, phi=15, theta=30, xlab="x1", ylab="x2", zlab="y")
-scatter3D(X[,1], X[,2], y, phi=15, theta=120, xlab="x1", ylab="x2", zlab="y")
+scatter3D(X[,1], X[,2], y, phi=15, theta=30, xlab="x1", ylab="x2", zlab="y", col=rainbow(N*1.4)[N:1])
+scatter3D(X[,1], X[,2], y, phi=15, theta=120, xlab="x1", ylab="x2", zlab="y", col=rainbow(N*1.4)[N:1])
 if(xbool.savePlots) { dev.off() }
 
 ################### bivar plots w/ y as color
 if(xbool.savePlots) { png(file.path("~", "Desktop", "KNN_rgr_bivar_2d.png"), width=2000, height=1000, pointsize=28) }
 par(mfrow=c(1, 3))
-plot( X[, 1], y, col=rainbow(N*2)[1:N][ rank(y) ], pch=19)
-plot( X[, 2], y, col=rainbow(N*2)[1:N][ rank(y) ], pch=19)
+plot( X[, 1], y, col=rainbow(N*1.4)[N:1][ rank(y) ], pch=19)
+plot( X[, 2], y, col=rainbow(N*1.4)[N:1][ rank(y) ], pch=19)
 plot( X[,1], X[,2], col=rainbow(N*2)[1:N][ rank(y) ], pch=19)
 if(xbool.savePlots) { dev.off() }
 
