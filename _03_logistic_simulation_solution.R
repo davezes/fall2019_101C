@@ -4,6 +4,9 @@
 options(stringsAsFactors=FALSE, width=350)
 
 
+####### make sure in working directory
+source("___f_funs.R")
+
 
 xbool.savePlots <- FALSE
 
@@ -68,6 +71,7 @@ while( xbool.keepGoing ) {
 xgrid <- as.matrix(expand.grid("b0"=1, "b1"=seq(-2, 3, length=50), "b2"=seq(-2, 3, length=50), "b3"=seq(-2, 3, length=50)))
 
 tail(xgrid)
+dim(xgrid)
 
 xcost <- rep(NA, nrow(xgrid))
 for(ii in 1:nrow(xgrid)) {
@@ -77,7 +81,7 @@ for(ii in 1:nrow(xgrid)) {
     phat <- 1 / (1 + exp(-uu))
     
     xcost[ ii ] <- f.logistic.cost(y=y, p.hat=phat)
-    if(ii %% 1000 == 0) {
+    if(ii %% 10000 == 0) {
     cat(ii, "\n")
     }
 }
