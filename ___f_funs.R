@@ -1,6 +1,10 @@
 
 
 
+
+
+
+
 ### lambda <- 1/10 ; x <- X[ xndx.valid, , drop=FALSE ] ; X <- X[ xndx.train, , drop=FALSE ] ; y <- y[ xndx.train ]
 
 h.ridge.scale <- function(X, y, lambda) {
