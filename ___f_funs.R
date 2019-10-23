@@ -153,6 +153,8 @@ h.knn <- function(X, y, k) {
 
 h.poly <- function(x, y, porder) {
     
+    #require(corpcor)
+    
     if( porder < 0 ) { stop("arg porder must be >= 0") }
     
     N <- length(x)
@@ -161,7 +163,7 @@ h.poly <- function(x, y, porder) {
         X[ , j ] <- x^(j-1)
     }
     bhat <- solve( crossprod(X) ) %*% ( t(X) %*% y )
-    
+    #bhat <- pseudoinverse( crossprod(X) ) %*% ( t(X) %*% y )
     
     fhat <- function(x) {
         
