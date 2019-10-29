@@ -2,6 +2,125 @@
 
 
 
+h_simpleStep <- function(x, y, xknots) {
+    
+    xknots_inf <- c(-Inf, xknots, Inf)
+    
+    n <- length(x)
+    mxH <- matrix(NA, n, length(xknots_inf)-1)
+    for(j in 2:length(xknots_inf)) {
+        mxH[ , j-1] <- ifelse(x >= xknots_inf[j-1] & x < xknots_inf[j], 1, 0)
+    }
+    
+    mxHH <- crossprod(mxH)
+    
+    #bhat <- solve( mxHH ) %*% t(mxH) %*% y
+    bhat <- solve( mxHH + diag(1, ncol(mxHH)) ) %*% t(mxH) %*% y
+    
+    fhat <- function(x0) {
+
+        n <- length(x0)
+        mxH0 <- matrix(NA, n, length(xknots_inf)-1)
+        for(j in 2:length(xknots_inf)) {
+            mxH0[ , j-1] <- ifelse(x0 >= xknots_inf[j-1] & x0 < xknots_inf[j], 1, 0)
+        }
+        
+        y0hat <- mxH0 %*% bhat
+        
+        return(y0hat)
+        
+    }
+    
+    return(fhat)
+    
+}
+
+
+
+
+
+########################
+
+
+f_basisNatSplines <- function(x, xknots) {
+    
+    n <- length(x)
+    mxH <- matrix(NA, n, length(xknots))
+    
+    xi_end <- xknots[ length(xknots) ] ; xi_end
+    dkm1 <- ff_d(x=x, xi=xknots[ length(xknots)-1 ], xi_end=xi_end)
+    
+    mxH[ , 1] <- rep(1, n)
+    mxH[ , 2] <- x
+    for(j in 3:length(xknots)) {
+        mxH[ , j] <- ff_d(x, xi=xknots[j-2], xi_end=xi_end) - dkm1
+    }
+    
+    return(mxH)
+    
+}
+
+
+
+#################### for natural splines
+
+ff_cub <- function(x, xi) {
+    s <- ifelse(x > xi, (x - xi)^3, 0)
+    return(s)
+}
+
+ff_d <- function(x, xi, xi_end) {
+    ns <- ( ff_cub(x, xi) - ff_cub(x, xi_end) ) / (xi_end - xi)
+    return(ns)
+}
+
+
+
+h_natSplines <- function(x, y, xknots) {
+    
+    n <- length(x)
+    mxH <- matrix(NA, n, length(xknots))
+    
+    xi_end <- xknots[ length(xknots) ] ; xi_end
+    dkm1 <- ff_d(x=x, xi=xknots[ length(xknots)-1 ], xi_end=xi_end)
+    
+    mxH[ , 1] <- rep(1, n)
+    mxH[ , 2] <- x
+    for(j in 3:length(xknots)) {
+        mxH[ , j] <- ff_d(x, xi=xknots[j-2], xi_end=xi_end) - dkm1
+    }
+    
+    mxHH <- crossprod(mxH)
+    
+    bhat <- solve( mxHH ) %*% t(mxH) %*% y
+    
+    fhat <- function(x0) {
+
+        dkm10 <- ff_d(x=x0, xi=xknots[ length(xknots)-1 ], xi_end=xi_end)
+        mxH0 <- matrix(NA, length(x0), length(xknots))
+        mxH0[ , 1] <- rep(1, length(x0))
+        mxH0[ , 2] <- x0
+        for(j in 3:length(xknots)) {
+            mxH0[ , j] <- ff_d(x=x0, xi=xknots[j-2], xi_end=xi_end) - dkm10
+        }
+        
+        y0hat <- mxH0 %*% bhat
+        
+        return(y0hat)
+        
+    }
+    
+    return(fhat)
+    
+    
+}
+
+
+
+############################
+
+
+
 
 
 

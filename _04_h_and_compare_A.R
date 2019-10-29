@@ -4,7 +4,7 @@
 options(stringsAsFactors=FALSE, width=350)
 
 
-xbool.savePlots <- FALSE
+xbool.savePlots <- TRUE
 
 
 ####### make sure in working directory
@@ -224,6 +224,13 @@ for(iinn in 1:nn) {
 if(xbool.savePlots) { png(file.path("~", "Desktop", "logisticExample_compare_knn.png"), width=1000, height=1000, pointsize=28) }
 par(mfrow=c(1, 1))
 boxplot(x=list("KNN-28"=xcost.out.knn, "Logistic"=xcost.out.logistic))
+if(xbool.savePlots) { dev.off() }
+
+
+if(xbool.savePlots) { png(file.path("~", "Desktop", "logisticExample_compare_delta_knn.png"), width=1000, height=1000, pointsize=28) }
+par(mfrow=c(1, 1))
+hist(xcost.out.logistic - xcost.out.knn, main="Logistic Cost: Logistic model minus KNN-28 model")
+#boxplot(x=list("KNN-28"=xcost.out.knn, "Logistic"=xcost.out.logistic))
 if(xbool.savePlots) { dev.off() }
 
 
