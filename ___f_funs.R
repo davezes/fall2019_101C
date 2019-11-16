@@ -1,6 +1,57 @@
 
 
 
+h_SS_I <- function(x, y, xlambda, boolHatMx=TRUE) {
+    
+    xknots <- sort(x)
+    mxC <- f_basisNatSplines(x=x, xknots=xknots)[ , -1]
+    cnames <- paste0("X", I(1:ncol(mxC)))
+    colnames(mxC) <- cnames
+    cmeans <- apply(mxC, 2, mean)
+    ymean <- mean(y)
+    mxCy <- cbind(mxC, "y"=y)
+    
+    mxCy_c <- t( t(mxCy) - c(cmeans, ymean) )
+
+    Scycy <- crossprod(mxCy_c)
+    Scc <- Scycy[ cnames, cnames ]
+    Scy <- Scycy[ cnames, "y" ]
+    
+    xreg <- xlambda
+    invSccReg <- solve( Scc +  diag(xreg, ncol(Scc)) )
+    bhats <- invSccReg %*% Scy
+    
+    if(boolHatMx) {
+        mxHat <- mxCy_c[ , cnames] %*% invSccReg %*% t(mxCy_c[ , cnames])
+    } else {
+        mxHat <- NULL
+    }
+    
+    fhat <- function(x0) {
+        
+        mxC0 <- f_basisNatSplines(x=x0, xknots=xknots)[ , -1, drop=FALSE ]
+        mxC0_c <- t( t(mxC0) - cmeans )
+        
+        y0c <- mxC0_c %*% bhats
+        y0 <- y0c + ymean
+        
+        ls_out <-
+        list(
+        "y0hat"=y0,
+        "bhats"=bhats,
+        "mxHat"=mxHat
+        )
+        
+        return(ls_out)
+        
+    }
+    
+    return(fhat)
+    
+}
+
+
+
 
 h_simpleStep <- function(x, y, xknots) {
     
