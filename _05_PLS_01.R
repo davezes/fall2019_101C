@@ -35,11 +35,11 @@ mxX <- cbind( "int"=rep(1, n), "x"=x3, xx1, xx2 )
 head(mxX)
 
 
-### btrue <- rep( c(1, 1, -1), length.out=ncol(mxX) )
+btrue <- rep( c(1, 2, -1), length.out=ncol(mxX) )
 
-btrue <- c(1, 1, -1, 0, 0, 1, 0, 0 )
+#btrue <- c(1, 1, -1, 0, 0, 1, 0, 0 )
 
-btrue <- c(1, 0, -7, 0, 0, 0, 0, 0 )
+#btrue <- c(1, 0, -7, 0, 0, 0, 0, 0 )
 
 
 ftrue <- mxX %*% btrue
