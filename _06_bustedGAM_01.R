@@ -43,8 +43,8 @@ y <- ftrue + errs
 
 
 
-if(xbool.savePlots) { png(file.path("~", "Desktop", "wiggles_sim_f_3d.png"), width=2000, height=1000, pointsize=28) }
-par(mfrow=c(1, 2))
+if(xbool.savePlots) { png(file.path("~", "Desktop", "wiggles_sim_f_3d.png"), width=1000, height=1000, pointsize=28) }
+par(mfrow=c(1, 1))
 scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3) ### , type="l"
 #xsp3 <- scatterplot3d( rep(xdom, 2), yy, fd, angle=30, xlab="x", ylab="y", zlab="density", cex.symbols=0.3) ### , type="l"
 #xsp3$points3d(x=c(x0, x0), y=c(0, 1), z=c(1, 1), type="h", lwd=3, col="#FF0000")
@@ -69,7 +69,7 @@ Xdom <- as.matrix( expand.grid( "x1"=x1dom, "x2"=x2dom ) )
 fdom <- f_true(x1=Xdom[ , "x1" ], x2=Xdom[ , "x2" ])
 mx.f.dom <- matrix(fdom, length(x1dom), length(x2dom))
 
-image(mx.f.dom)
+## image(mx.f.dom)
 
 
 if(xbool.savePlots) { png(file.path("~", "Desktop", "wireframe_true_01.png"), width=2000, height=1000, pointsize=28) }
@@ -90,7 +90,7 @@ mx.f.dom <- matrix(fdom, length(x1dom), length(x2dom))
 
 if(xbool.savePlots) { png(file.path("~", "Desktop", "heat_true_01.png"), width=1000, height=1000, pointsize=28) }
 par(mfrow=c(1,1))
-image(mx.f.dom,  col = hcl.colors(300, "YlOrRd", rev = TRUE))
+image(mx.f.dom,  col = hcl.colors(300, "YlOrRd", rev = TRUE), xlab="x2", ylab="x1")
 if(xbool.savePlots) { dev.off() }
 
 
@@ -115,10 +115,10 @@ xrmse <- sqrt( mean( (y - yhat)^2 ) )
 xrmse
 
 
-if(xbool.savePlots) { png(file.path("~", "Desktop", "wiggles_simfitGAM_f_3d.png"), width=2000, height=1000, pointsize=18) }
-par(mfrow=c(1, 2))
+if(xbool.savePlots) { png(file.path("~", "Desktop", "wiggles_simfitGAM_f_3d.png"), width=1000, height=1000, pointsize=18) }
+par(mfrow=c(1, 1))
 #scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3) ### , type="l"
-xsp3 <- scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3) ### , type="l"
+xsp3 <- scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3, main=paste0("GAM Spines. RMSE: ", round(xrmse, 4))) ### , type="l"
 xsp3$points3d(x=x1, y=x2, z=yhat, col="#FF0000")
 if(xbool.savePlots) { dev.off() }
 
@@ -142,6 +142,13 @@ yhatcross <- mxX %*% bhatcross
 
 xrmse <- sqrt( mean( (y - yhatcross)^2 ) )
 xrmse
+
+if(xbool.savePlots) { png(file.path("~", "Desktop", "wiggles_simfitGAM_finteract_3d.png"), width=1000, height=1000, pointsize=18) }
+par(mfrow=c(1, 1))
+#scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3) ### , type="l"
+xsp3 <- scatterplot3d( x1, x2, y, angle=30, xlab="x1", ylab="x2", zlab="y", cex.symbols=0.3, main=paste0("Interacted Spines w/some Ridge!  RMSE: ", round(xrmse, 4))) ### , type="l"
+xsp3$points3d(x=x1, y=x2, z=yhatcross, col="#FF0000")
+if(xbool.savePlots) { dev.off() }
 
 
 
