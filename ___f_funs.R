@@ -1,6 +1,33 @@
 
 
 
+
+
+f_basisCubicSplines <- function(x, xknots, xintercept=TRUE) {
+    
+    n <- length(x)
+    mxH <- matrix(NA, n, length(xknots)+3)
+
+    mxH[ , 1] <- x
+    mxH[ , 2] <- x^2
+    mxH[ , 3] <- x^3
+    for(j in 1:length(xknots)) {
+        mxH[ , j+3] <- ff_cub(x, xi=xknots[j])
+    }
+    
+    colnames(mxH) <- c("x", "x2", "x3", paste0("xi_", I(1:length(xknots))))
+    
+    if(xintercept) {
+        mxH <- cbind("int"=rep(1, n), mxH)
+    }
+    
+    return(mxH)
+    
+}
+
+
+
+
 h_SS_I <- function(x, y, xlambda, boolHatMx=TRUE) {
     
     xknots <- sort(x)

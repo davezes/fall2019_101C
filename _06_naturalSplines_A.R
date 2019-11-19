@@ -11,7 +11,7 @@ xbool.savePlots <- TRUE
 source("___f_funs.R")
 
 
-############ prepair dataset for bias variance
+############ 
 
 library(mvtnorm)
 
