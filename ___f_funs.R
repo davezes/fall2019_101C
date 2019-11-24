@@ -1,6 +1,63 @@
 
 
 
+f_classEntropy <- function(mx) {
+    
+    xtot <- mx[ , "tot" ] ; xtot
+    
+    phats <- mx / xtot ; phats
+    
+    logphats <- log(phats) ; logphats
+    logphats[ phats == 0 ] <- 0
+    
+    xout <- - apply(phats * logphats, 1, sum)
+    
+    return(xout)
+}
+
+
+
+
+f_gini <- function(mx) {
+    
+    xtot <- mx[ , "tot" ] ; xtot
+    
+    phats <- mx / xtot ; phats
+    
+    notphats <- 1 - phats ; notphats
+    
+    xout <- apply(phats * notphats, 1, sum)
+    
+    return(xout)
+}
+
+
+
+
+
+#### x <- x1 ; xcut <- -0.5
+
+f_table <- function(x, xcut, y) {
+    
+    yuse <- as.factor(y)
+    y1 <- yuse[ x <= xcut ]
+    y2 <- yuse[ x > xcut ]
+    mx <-
+    as.matrix(
+    rbind(
+    table(y1),
+    table(y2)
+    )
+    )
+    mx <- cbind(mx, "tot"=apply(mx, 1, sum))
+    rownames(mx) <- c("R1", "R2")
+    
+    return(mx)
+    
+}
+
+
+
 
 
 f_basisCubicSplines <- function(x, xknots, xintercept=TRUE) {
