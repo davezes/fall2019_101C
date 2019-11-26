@@ -1,5 +1,43 @@
 
 
+#### X <- cbind(x1, x2) ; rtries <- 20 ; xhood <- 0.4
+
+f_best_hood <- function(X, y, rtries, xhood) {
+    
+    N <- nrow(X)
+    
+    xndxs <- sample(I(1:N), size=rtries, replace=FALSE) ; xndxs
+    for(ii in 1:rtries) {
+        xthis_x <- X[ xndxs[ii], ]
+        xdd <- apply( abs(t(X) - xthis_x), 2, sum )
+    
+        xmaskA <- xdd < xhood
+        xmaskB <- !xmaskA
+        
+        yA <- y[ xmaskA ]
+        yB <- y[ xmaskB ]
+        avgyA <- mean(yA)
+        avgyB <- mean(yB)
+        xmsedev <- mean( c( yA - avgyA, yB - avgyB )^2 ) ; xmsedev
+        ## cat(xmsedev, "\n")
+        if(xmsedev < best.cost) {
+            best.cost <- xmsedev
+            
+            yhat[ xmaskA ] <- avgyA
+            yhat[ xmaskB ] <- avgyB
+
+        }
+        
+    }
+    
+    return(yhat)
+    
+}
+
+
+
+
+
 
 f_classEntropy <- function(mx) {
     
