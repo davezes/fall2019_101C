@@ -4,7 +4,7 @@
 options(stringsAsFactors=FALSE, width=350)
 
 
-xbool.savePlots <- TRUE
+xbool.savePlots <- FALSE
 
 
 ####### make sure in working directory
